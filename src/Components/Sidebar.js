@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
-import Block from './Block';
+import { ReducerContext } from '../reducer/Context';
+import DraggableBlock from './Block';
 
 const SidebarContainer = styled.div`
   background: #2D2D2D;
@@ -23,15 +24,15 @@ const Header = styled.div`
 
 const BlocksContainer = styled.div``
 
-const blocks = ['Label', 'Input', 'Button'];
-
 const Sidebar = () => {
+  const { state } = useContext(ReducerContext);
+  const { blocks } = state;
   return (
     <SidebarContainer>
       <Header>Blocks</Header>
       <BlocksContainer>
         {blocks.map(block => {
-          return <Block label={block} key={block} />
+          return <DraggableBlock label={block.name} key={block.name} />
         })}
       </BlocksContainer>
     </SidebarContainer>

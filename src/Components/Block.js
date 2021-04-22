@@ -28,15 +28,24 @@ const BlockWrapper = styled.div`
   }
 `;
 
-const Block = ({ label }) => {
+const DraggableBlock = ({ label }) => {
+  const handleDragStart = (e, label) => {
+    e.dataTransfer.setData("id", label);
+  }
+
   return (
-    <BlockWrapper>
-      <div className="icon">
-        <img src={icon} alt="icon" />
-      </div>
-      <div className="label">{label}</div>
-    </BlockWrapper>
+      <BlockWrapper
+        draggable
+        onDragStart={(e) => handleDragStart(e, label)}
+      >
+        <div className="icon">
+          <img src={icon} alt="icon" />
+        </div>
+        <div className="label">{label}</div>
+      </BlockWrapper>
   )
 }
 
-export default Block
+
+
+export default DraggableBlock;
