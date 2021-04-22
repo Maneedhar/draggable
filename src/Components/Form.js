@@ -88,8 +88,8 @@ const Form = ({ id }) => {
   const [input, setInput] = useState({
     xpos: block.xpos,
     ypos: block.ypos,
-    fontSize: block.fontSize,
-    fontWeight: block.fontWeight,
+    fontSize: block.fontSize || 16,
+    fontWeight: block.fontWeight || 400,
   })
   const { modalDispatch, stateDispatch } = dispatch;
 

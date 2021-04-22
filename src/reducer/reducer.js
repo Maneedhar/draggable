@@ -23,6 +23,9 @@ export const initialState = {
   ],
 }
 
+export const initializer = (initialValue = initialState) =>
+  JSON.parse(localStorage.getItem("blocks")) || initialValue;
+
 export const reducer = (state, action) => {
   switch(action.type) {
     case actionTypes.isDragging:
@@ -67,7 +70,7 @@ export const reducer = (state, action) => {
     case actionTypes.deleteElement:
       const deletedBlocks = state.blocks.filter(block => {
         if (block.name === action.payload) {
-          block.page = 'Sidebar';
+          block.page = 'sidebar';
         }
         return block;
       })
