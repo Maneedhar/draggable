@@ -1,10 +1,8 @@
 import React, { useContext } from 'react'
 import styled from 'styled-components';
-import { deleteElement, isDragging, updateModal } from '../reducer/actions';
-// import actionTypes from '../reducer/actionTypes';
+import { deleteElement, dropped, updateModal } from '../reducer/actions';
 import { ReducerContext } from '../reducer/Context';
 import PositionForm from './Form';
-// import EditorModal from './EditorModal';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -22,6 +20,9 @@ const Label = styled.label`
   font-weight: ${props => props.fontWeight};
   cursor: pointer;
   &:hover {
+    border: 2px solid #D95409;
+  }
+  &.active {
     border: 2px solid #D95409;
   }
 `;
@@ -57,7 +58,12 @@ const Button = styled.div`
   color: #fff;
   background: #0044C1;
   border-radius: 2px;
+  border: 2px solid #0044C1;
   width: 140px;
+  &:focus {
+    outline: none;
+    border: 2px solid #D95409;
+  }
 `;
 
 const Page = () => {
@@ -78,7 +84,7 @@ const Page = () => {
     const id = e.dataTransfer.getData("id");
     const { clientX, clientY } = e;
     const { page } = blocks.filter(block => block.name === id)[0];
-    stateDispatch(isDragging({ payload: { id, clientX, clientY } }));
+    stateDispatch(dropped({ payload: { id, clientX, clientY } }));
     modalDispatch(updateModal(<PositionForm id={id} page={page} />));
   }
 
@@ -113,11 +119,14 @@ const Page = () => {
           return (
             <Component
               tabIndex="0"
-              draggable 
+              draggable
               onDragStart={(e) => handleDragStart(e, name)}
               key={type} 
               {...block}
               onKeyDown={e => handleKeyDown(e, name )}
+              onClick={(e) => {
+                e.target.classList.toggle('active')
+              }}
             >
               {text}
             </Component>

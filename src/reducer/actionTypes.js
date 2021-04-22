@@ -1,5 +1,5 @@
 const actionTypes = {
-  isDragging: 'IS_DRAGGING',
+  dropped: 'BLOCK_DROPPED',
   dragged: 'BLOCK_DRAGGED',
   updatePosition: 'UPDATE_POSITION',
   deleteElement: 'DELETE_ELEMENT',

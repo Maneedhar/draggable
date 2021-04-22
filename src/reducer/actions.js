@@ -7,9 +7,9 @@ export const updateModal = (modal) => {
   };
 }
 
-export const isDragging = (payload) => {
+export const dropped = (payload) => {
   return {
-    type: actionTypes.isDragging,
+    type: actionTypes.dropped,
     ...payload,
   };
 }

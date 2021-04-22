@@ -28,12 +28,13 @@ export const initializer = (initialValue = initialState) =>
 
 export const reducer = (state, action) => {
   switch(action.type) {
-    case actionTypes.isDragging:
+    case actionTypes.dropped:
       const { id, clientX, clientY } = action.payload;
       const blocks = state.blocks.filter(block => {
         if (block.name === id) {
           block.xpos = clientX;
           block.ypos = clientY;
+          block.isDragging = true;
         }
         return block;
       });
@@ -45,6 +46,7 @@ export const reducer = (state, action) => {
       const draggedBlocks = state.blocks.filter(block => {
         if (block.name === action.payload) {
           block.page = 'page';
+          block.isDragging = true;
         }
         return block;
       });
