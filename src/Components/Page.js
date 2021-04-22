@@ -1,20 +1,74 @@
 import React, { useContext } from 'react'
 import styled from 'styled-components';
-import { updateModal } from '../reducer/actions';
-import actionTypes from '../reducer/actionTypes';
+import { deleteElement, isDragging, updateModal } from '../reducer/actions';
+// import actionTypes from '../reducer/actionTypes';
 import { ReducerContext } from '../reducer/Context';
 import PositionForm from './Form';
 // import EditorModal from './EditorModal';
 
 const PageContainer = styled.div`
-  width: 100%
-`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+`;
+
+const Label = styled.label`
+  position: absolute;
+  top: ${props => props.ypos}px;
+  left: ${props => props.xpos}px;
+  font-size: ${props => props.fontSize}px;
+  font-weight: ${props => props.fontWeight};
+  cursor: pointer;
+  &:hover {
+    border: 2px solid #D95409;
+  }
+`;
+
+const Input = styled.input`
+  position: absolute;
+  top: ${props => props.ypos}px;
+  left: ${props => props.xpos}px;
+  padding: 8px 12px;
+  min-height: 24px;
+  font-size: ${props => props.fontSize}px;
+  font-weight: ${props => props.fontWeight};
+  border: 1px solid #D9D9D9;
+  &:focus {
+    outline: none;
+    border: 2px solid #D95409;
+  }
+`;
+
+const Button = styled.div`
+  position: absolute;
+  top: ${props => props.ypos}px;
+  left: ${props => props.xpos}px;
+  font-size: ${props => props.fontSize}px;
+  font-weight: ${props => props.fontWeight};
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  color: #fff;
+  background: #0044C1;
+  border-radius: 2px;
+  width: 140px;
+`;
 
 const Page = () => {
   const { state, dispatch } = useContext(ReducerContext);
   const { blocks } = state;
 
-  const { modalDispatch } = dispatch
+  const { modalDispatch, stateDispatch } = dispatch;
+
+  const handleDragStart = (e, label) => {
+    e.dataTransfer.setData("id", label);
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -22,8 +76,19 @@ const Page = () => {
 
   const handleDrop = e => {
     const id = e.dataTransfer.getData("id");
-    modalDispatch(updateModal(<PositionForm id={id} />));
+    const { clientX, clientY } = e;
+    const { page } = blocks.filter(block => block.name === id)[0];
+    stateDispatch(isDragging({ payload: { id, clientX, clientY } }));
+    modalDispatch(updateModal(<PositionForm id={id} page={page} />));
   }
+
+  const handleKeyDown = (e, name) => {
+    if (e.keyCode === 13) {
+      modalDispatch(updateModal(<PositionForm id={name} />));
+    } else if (e.keyCode === 46) {
+      stateDispatch(deleteElement(name));
+    }
+  };
 
   return (
     <PageContainer
@@ -31,14 +96,37 @@ const Page = () => {
       onDrop={e => handleDrop(e)}
     >
       {blocks.map(block => {
-        if (block.page === 'page') {
-          const Type = block.type;
-          return <p key={block.type}>this is a {block.name}</p>
+        const { type, text, page, name } = block;        
+        if (page === 'page') {
+          if (type === 'input') {
+            return (
+              <Input
+                key={type}
+                {...block}
+                draggable
+                onDragStart={(e) => handleDragStart(e, name)}
+                onKeyDown={e => handleKeyDown(e, name )}
+              />
+            )
+          }
+          const Component = type === 'button' ? Button : Label
+          return (
+            <Component
+              tabIndex="0"
+              draggable 
+              onDragStart={(e) => handleDragStart(e, name)}
+              key={type} 
+              {...block}
+              onKeyDown={e => handleKeyDown(e, name )}
+            >
+              {text}
+            </Component>
+          )
         }
-        return null
+        return null;
       })}
     </PageContainer>
   )
 }
 
-export default Page
+export default Page;
