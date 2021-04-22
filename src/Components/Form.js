@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import close from '../assets/close.png';
-import { getDragged, updateDragged, updateModal } from '../reducer/actions';
+import { updateDragged, updateModal, updatePosition } from '../reducer/actions';
 import { ReducerContext } from '../reducer/Context';
 
 const FormContainer = styled.div`
@@ -60,7 +60,7 @@ const TextInput = styled.input`
   }
 `;
 
-const SimilarButton = styled.div`
+const Button = styled.div`
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -74,16 +74,38 @@ const SimilarButton = styled.div`
   width: 140px;
 `;
 
-const Form = ({ id }) => {
-  const { dispatch } = useContext(ReducerContext);
+const Select = styled.select`
+  padding: 8px 12px;
+`;
 
+const fontWeightOptions = [
+  100, 200, 300, 400, 500, 600, 700, 800, 900
+]
+
+const Form = ({ id }) => {
+  const { state, dispatch } = useContext(ReducerContext);
+  const block = state.blocks.filter(block => block.name === id)[0];
+  const [input, setInput] = useState({
+    xpos: block.xpos,
+    ypos: block.ypos,
+    fontSize: block.fontSize,
+    fontWeight: block.fontWeight,
+  })
   const { modalDispatch, stateDispatch } = dispatch;
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  }
 
   const handleModal = (e) => {
     e.preventDefault();
     modalDispatch(updateModal(null));
     stateDispatch(updateDragged(id));
+    stateDispatch(updatePosition({ payload: { input, label: id } }));
   }
+
+  const Placeholder = `This is ${id === 'input' ? 'an ' + id :  'a ' + id }`
 
   return (
     <FormContainer>
@@ -98,30 +120,34 @@ const Form = ({ id }) => {
         <FormGroup>
           <Label>Text</Label>
           <TextInput 
-            placeholder={"This is a label"}
+            placeholder={Placeholder}
           />
         </FormGroup>
         <FormGroup>
           <Label>X</Label>
-          <TextInput />
+          <TextInput type="number" value={input.xpos} name="xpos" onChange={e => handleInputChange(e, 'xpos')} />
         </FormGroup>
         <FormGroup>
           <Label>Y</Label>
-          <TextInput />
+          <TextInput type="number" value={input.ypos} name="ypos" onChange={e => handleInputChange(e, 'ypos')} />
         </FormGroup>
         <FormGroup>
           <Label>Font Size</Label>
-          <TextInput />
+          <TextInput type="number" value={input.fontSize} name="fontSize" onChange={e => handleInputChange(e)} />
         </FormGroup>
         <FormGroup>
           <Label>Font Weight</Label>
-          <TextInput />
+          <Select value={input.fontWeight} name="fontWeight" onChange={e => handleInputChange(e)}>
+            {fontWeightOptions.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </Select>
         </FormGroup>
-        <SimilarButton
+        <Button
           onClick={e => handleModal(e)}
         >
           Save Changes
-        </SimilarButton>
+        </Button>
       </FormWrapper>
     </FormContainer>
   )
