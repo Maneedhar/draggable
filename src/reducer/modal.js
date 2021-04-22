@@ -7,6 +7,6 @@ export const modalReducer = (state = null, action) => {
         modal: action.modal,
       };
     default:
-      return state
+      return state;
   }
 }

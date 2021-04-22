@@ -32,7 +32,7 @@ const Modal = () => {
     setTimeout(() => modalDispatch(updateModal(null)));
   }
 
-  if (!modal) return null;
+  if (!modal || modal.props.page === 'page' || !modal.props.id) return null;
   return (
     <ModalOverlay
       onClick={closeModal}
