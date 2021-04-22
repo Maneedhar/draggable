@@ -71,6 +71,10 @@ export const reducer = (state, action) => {
       const deletedBlocks = state.blocks.filter(block => {
         if (block.name === action.payload) {
           block.page = 'sidebar';
+          block.xpos = '';
+          block.ypos = '';
+          block.fontSize = '';
+          block.fontWeight = '';
         }
         return block;
       })
