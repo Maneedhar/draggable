@@ -31,18 +31,18 @@ const BlockWrapper = styled.div`
 const DraggableBlock = ({ label }) => {
   const handleDragStart = (e, label) => {
     e.dataTransfer.setData("id", label);
-  }
+  };
 
   return (
-      <BlockWrapper
-        draggable
-        onDragStart={(e) => handleDragStart(e, label)}
-      >
-        <div className="icon">
-          <img src={icon} alt="icon" />
-        </div>
-        <div className="label">{label}</div>
-      </BlockWrapper>
+    <BlockWrapper
+      draggable
+      onDragStart={(e) => handleDragStart(e, label)}
+    >
+      <div className="icon">
+        <img src={icon} alt="icon" />
+      </div>
+      <div className="label">{label}</div>
+    </BlockWrapper>
   )
 }
 
