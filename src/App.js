@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Home from "./Home";
+import ReducerProvider from "./reducer/Context";
 
 const PageContainer = styled.div`
   background: #E5E5E5;
@@ -8,9 +9,11 @@ const PageContainer = styled.div`
 
 function App() {
   return (
-    <PageContainer>
-      <Home />
-    </PageContainer>
+    <ReducerProvider>
+      <PageContainer>
+        <Home />
+      </PageContainer>
+    </ReducerProvider>
   );
 }
 
